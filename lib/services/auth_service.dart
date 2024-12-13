@@ -68,9 +68,9 @@ class AuthService {
           'Content-type': 'application/json; charset=UTF-8'
         },
       );
-      print(res.body);
       httpErrorHandle(
         response: res,
+        // ignore: use_build_context_synchronously
         context: context,
         onSuccess: () async {
           // Marked the callback as async
@@ -78,9 +78,58 @@ class AuthService {
           Provider.of<UserProvider>(context, listen: false).setUser(res.body);
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
           Navigator.pushNamedAndRemoveUntil(
-              context, HomeScreen.routeName, (route) => false);
+              // ignore: use_build_context_synchronously
+              context,
+              HomeScreen.routeName,
+              (route) => false);
         },
       );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  // get user data
+  void getUserData({
+    // Corrected method name
+    required BuildContext context,
+  }) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('x-auth-token');
+
+      if (token == null) {
+        prefs.setString('x-auth-token', '');
+      }
+
+      await http.post(
+        Uri.parse('$uri/tokenIsValid'),
+      );
+
+      // http.Response res = await http.post(
+      //   Uri.parse('$uri/api/signin'),
+      //   body: jsonEncode({
+      //     'email': email,
+      //     'password': password,
+      //   }),
+      //   headers: <String, String>{
+      //     'Content-type': 'application/json; charset=UTF-8'
+      //   },
+      // );
+      // httpErrorHandle(
+      //   response: res,
+      //   // ignore: use_build_context_synchronously
+      //   context: context,
+      //   onSuccess: () async {
+      //     // Marked the callback as async
+      //     SharedPreferences prefs = await SharedPreferences.getInstance();
+      //     Provider.of<UserProvider>(context, listen: false).setUser(res.body);
+      //     await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
+      //     Navigator.pushNamedAndRemoveUntil(
+      //         // ignore: use_build_context_synchronously
+      //         context,
+      //         HomeScreen.routeName, (route) => false);
+      //   },
     } catch (e) {
       showSnackBar(context, e.toString());
     }
