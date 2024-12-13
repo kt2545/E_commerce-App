@@ -8,7 +8,7 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "A server for the e_commerce_app.",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^4.21.1",

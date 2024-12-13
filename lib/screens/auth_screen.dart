@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:e_commerce_app/common/widgets/custom_textfield.dart'; // Adjust the path based on your file structure
@@ -20,7 +21,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Auth _auth = Auth.signin;
   final _signUpFormKey = GlobalKey<FormState>();
   final _signInFormKey = GlobalKey<FormState>();
-
+  final AuthService authService = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
@@ -31,6 +32,23 @@ class _AuthScreenState extends State<AuthScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
+  }
+
+  void signUpUser() {
+    authService.signUpUser(
+      context: context,
+      email: _emailController.text,
+      password: _passwordController.text,
+      name: _nameController.text,
+    );
+  }
+
+  void signInUser() {
+    authService.signInUser(
+      context: context,
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
   }
 
   @override
@@ -93,7 +111,11 @@ class _AuthScreenState extends State<AuthScreen> {
                         const SizedBox(height: 10),
                         CustomButton(
                           text: 'Sign Up',
-                          onTap: () {},
+                          onTap: () {
+                            if (_signUpFormKey.currentState!.validate()) {
+                              signUpUser();
+                            }
+                          },
                         ),
                       ],
                     ),
@@ -125,8 +147,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   padding: const EdgeInsets.all(8),
                   color: GlobalVariables.backgroundColor,
                   child: Form(
-                    key:
-                        _signInFormKey, // Corrected to use the sign-in form key
+                    key: _signInFormKey,
                     child: Column(
                       children: [
                         CustomTextField(
@@ -141,7 +162,11 @@ class _AuthScreenState extends State<AuthScreen> {
                         const SizedBox(height: 10),
                         CustomButton(
                           text: 'Sign In',
-                          onTap: () {},
+                          onTap: () {
+                            if (_signInFormKey.currentState!.validate()) {
+                              signInUser();
+                            }
+                          },
                         ),
                       ],
                     ),
