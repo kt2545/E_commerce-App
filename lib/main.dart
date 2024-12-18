@@ -1,5 +1,7 @@
+import 'package:e_commerce_app/common/widgets/bottom_bar.dart';
 import 'package:e_commerce_app/router.dart';
 import 'package:e_commerce_app/screens/auth_screen.dart';
+import 'package:e_commerce_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'constants/global_variables.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +23,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // Added State class
+  final AuthService authService = AuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    authService.getUserData(context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,7 +48,9 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: const AuthScreen(),
+      home: Provider.of<UserProvider>(context).user.token.isNotEmpty
+          ? const BottomBar()
+          : const AuthScreen(),
     );
   }
 }

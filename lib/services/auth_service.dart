@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:e_commerce_app/constants/error_handling.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:e_commerce_app/constants/utils.dart';
@@ -9,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-import 'package:e_commerce_app/features/home/screens/home_screen.dart';
+import 'package:e_commerce_app/common/widgets/bottom_bar.dart';
 
 class AuthService {
   // sign up user
@@ -32,7 +31,7 @@ class AuthService {
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),
-        body: user.toJson(),
+        body: jsonEncode(user.toJson()),
         headers: <String, String>{
           'Content-type': 'application/json; charset=UTF-8'
         },
@@ -80,7 +79,7 @@ class AuthService {
           Navigator.pushNamedAndRemoveUntil(
               // ignore: use_build_context_synchronously
               context,
-              HomeScreen.routeName,
+              BottomBar.routeName,
               (route) => false);
         },
       );
@@ -102,34 +101,28 @@ class AuthService {
         prefs.setString('x-auth-token', '');
       }
 
-      await http.post(
+      var tokenRes = await http.post(
         Uri.parse('$uri/tokenIsValid'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token!
+        },
       );
 
-      // http.Response res = await http.post(
-      //   Uri.parse('$uri/api/signin'),
-      //   body: jsonEncode({
-      //     'email': email,
-      //     'password': password,
-      //   }),
-      //   headers: <String, String>{
-      //     'Content-type': 'application/json; charset=UTF-8'
-      //   },
-      // );
-      // httpErrorHandle(
-      //   response: res,
-      //   // ignore: use_build_context_synchronously
-      //   context: context,
-      //   onSuccess: () async {
-      //     // Marked the callback as async
-      //     SharedPreferences prefs = await SharedPreferences.getInstance();
-      //     Provider.of<UserProvider>(context, listen: false).setUser(res.body);
-      //     await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
-      //     Navigator.pushNamedAndRemoveUntil(
-      //         // ignore: use_build_context_synchronously
-      //         context,
-      //         HomeScreen.routeName, (route) => false);
-      //   },
+      var response = jsonDecode(tokenRes.body);
+
+      if (response == true) {
+        http.Response userRes = await http.get(
+          Uri.parse('$uri/'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': token
+          },
+        );
+
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.setUser(userRes.body);
+      }
     } catch (e) {
       showSnackBar(context, e.toString());
     }

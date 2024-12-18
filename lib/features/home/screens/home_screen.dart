@@ -5,7 +5,7 @@ import 'dart:convert'; // Import this to use jsonEncode
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
