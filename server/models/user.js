@@ -1,20 +1,20 @@
+// e_commerce_app/server/models/user.js
 const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
-        reqired: true,
+        required: true, // Corrected spelling
         type: String,
         trim: true,
     },
     email: {
-        reqired: true,
+        required: true, // Corrected spelling
         type: String,
         trim: true,
         validate: {
             validator: (value) => {
-             const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$/;
-             return value.match(re);
-
+                const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$/;
+                return value.match(re);
             },
             message: 'Please enter a valid email address',
         },
@@ -34,5 +34,5 @@ const userSchema = mongoose.Schema({
     // cart
 });
 
-const User = mongoose.model("User",userSchema);
+const User = mongoose.model("User", userSchema); // Added space after comma
 module.exports = User;

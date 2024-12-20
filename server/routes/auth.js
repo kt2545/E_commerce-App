@@ -1,9 +1,11 @@
-const express = require("express");
-const User = require("../models/user");
+const express = require('express');
+const User = require('../models/user');
 const bcryptjs = require('bcryptjs');
-const authRouter = express.Router();
 const jwt = require('jsonwebtoken');
-const auth = require('../middleware/auth');
+const path = require('path');
+
+const authRouter = express.Router();
+const auth = require(path.resolve(__dirname, '../middlewares/auth')); // Use absolute path
 
 // SIGN UP
 authRouter.post("/api/signup", async (req, res) => {
@@ -26,7 +28,7 @@ authRouter.post("/api/signup", async (req, res) => {
         res.json({ user, hashedPassword });
     } catch (e) {
         res.status(500).json({ error: e.message });
-    }  
+    }
 });
 
 // SIGN IN
@@ -34,7 +36,7 @@ authRouter.post('/api/signin', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email: email });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ msg: "User with this email does not exist!" });
         }
@@ -68,7 +70,7 @@ authRouter.post("/tokenIsValid", async (req, res) => {
 });
 
 // Get user data
-authRouter.get('/', auth, async (req, res) => {  // Use the middleware here
+authRouter.get('/', auth, async (req, res) => {
     try {
         const user = await User.findById(req.user);
         res.json({ ...user._doc, token: req.token });
