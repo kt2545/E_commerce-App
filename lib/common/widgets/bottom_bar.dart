@@ -1,5 +1,8 @@
 import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:e_commerce_app/features/home/screens/home_screen.dart'; // Use alias for the package
+import 'package:e_commerce_app/features/account/screens/account_screen.dart';
 
 class BottomBar extends StatefulWidget {
   static const String routeName = 'actual-home';
@@ -10,19 +13,35 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
-  final int _page = 0;
+  int _page = 0; // Ensure _page is mutable
   double bottomBarWidth = 42;
   double bottomBarBorderWidth = 5;
+
+  List<Widget> pages = [
+    const HomeScreen(),
+    const AccountScreen(),
+    const Center(
+      child: Text('Cart Page'),
+    ),
+  ];
+
+  void updatePage(int page) {
+    setState(() {
+      _page = page;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: pages[_page],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _page,
         selectedItemColor: GlobalVariables.selectedNavBarColor,
         unselectedItemColor: GlobalVariables.unselectedNavBarColor,
         backgroundColor: GlobalVariables.backgroundColor,
         iconSize: 28,
+        onTap: updatePage,
         items: [
           // Home
           BottomNavigationBarItem(
@@ -64,7 +83,7 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: '',
           ),
-          //  CART
+          // Cart
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -78,8 +97,15 @@ class _BottomBarState extends State<BottomBar> {
                   ),
                 ),
               ),
-              child: const Icon(
-                Icons.home_outlined,
+              child: badges.Badge(
+                // Use alias for Badge
+                elevation: 0,
+                badgeContent: const Text('2'),
+                badgeColor: Colors.white,
+                child: const Icon(
+                  Icons
+                      .shopping_cart_outlined, // Ensure the correct icon is used
+                ),
               ),
             ),
             label: '',
