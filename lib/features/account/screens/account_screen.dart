@@ -1,5 +1,7 @@
 import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:e_commerce_app/features/account/widgets/below_app_bar.dart';
+import 'package:e_commerce_app/features/account/widgets/top_buttons.dart';
+import 'package:e_commerce_app/features/account/widgets/orders.dart'; // Ensure this import is correct
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -10,7 +12,7 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50), // Move this line before body
+        preferredSize: const Size.fromHeight(50), // Correct placement
         child: AppBar(
           flexibleSpace: Container(
             decoration: const BoxDecoration(
@@ -48,7 +50,13 @@ class AccountScreen extends StatelessWidget {
         ),
       ),
       body: Column(
-        children: const [BelowAppBar()],
+        children: const [
+          BelowAppBar(),
+          SizedBox(height: 10),
+          TopButtons(),
+          SizedBox(height: 20),
+          Orders(), // Corrected this line
+        ],
       ), // Ensure there's a comma after the Column widget
     );
   }
