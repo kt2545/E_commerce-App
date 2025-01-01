@@ -1,7 +1,8 @@
-import 'package:e_commerce_app/features/home/screens/home_screen.dart';
-import 'package:e_commerce_app/screens/auth_screen.dart';
 import 'package:flutter/material.dart';
+// import 'package:e_commerce_app/models/user.dart';
+import 'package:e_commerce_app/screens/auth_screen.dart';
 import 'package:e_commerce_app/common/widgets/bottom_bar.dart';
+import 'package:e_commerce_app/features/home/screens/home_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {

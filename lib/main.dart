@@ -1,4 +1,5 @@
-import 'package:e_commerce_app/common/widgets/bottom_bar.dart';
+// import 'package:e_commerce_app/common/widgets/bottom_bar.dart';
+// import 'package:e_commerce_app/features/admin/screens/admin_screen.dart';
 import 'package:e_commerce_app/router.dart';
 // import 'package:e_commerce_app/screens/auth_screen.dart';
 import 'package:e_commerce_app/services/auth_service.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'constants/global_variables.dart';
 import 'package:provider/provider.dart';
 import 'package:e_commerce_app/providers/user_provider.dart';
+import 'package:e_commerce_app/features/admin/screens/add_product_screen.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -37,6 +39,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Ecommerce App',
       theme: ThemeData(
         scaffoldBackgroundColor: GlobalVariables.backgroundColor,
@@ -51,8 +54,10 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      // Directly open BottomBar page
-      home: const BottomBar(),
+      // home: Provider.of<UserProvider>(context).user.token.isNotEmpty
+      //     ? const BottomBar()
+      //     : const AuthScreen(),
+      home: const AddProductScreen(),
     );
   }
 }

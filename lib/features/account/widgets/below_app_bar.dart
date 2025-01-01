@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class BelowAppBar extends StatelessWidget {
-  const BelowAppBar({Key? key}) : super(key: key);
+  const BelowAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
-
-    print('User name: ${user.name}');
 
     return Container(
       decoration: const BoxDecoration(
@@ -28,8 +26,9 @@ class BelowAppBar extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  // text: user.name,
-                  text: user.name.isNotEmpty ? user.name : 'Admin',
+                  text: user.name.isNotEmpty
+                      ? user.name
+                      : 'Admin', // Fallback logic
 
                   style: const TextStyle(
                     fontSize: 22,

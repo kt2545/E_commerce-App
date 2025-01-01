@@ -14,7 +14,12 @@ dependencies:
   http: ^0.13.3
   provider: ^6.1.2
   shared_preferences: ^2.3.3
-  badges: ^2.0.2  # Added badges dependency
+  badges: ^2.0.2
+  carousel_slider: ^4.0.0 # Updated dependency
+  mongo_dart: ^0.10.3 
+  dotted_border: ^2.0.0+2 
+  file_picker: ^8.1.4
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:

@@ -1,27 +1,27 @@
 import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart' as badges;
-import 'package:e_commerce_app/features/home/screens/home_screen.dart';
-import 'package:e_commerce_app/features/account/screens/account_screen.dart';
-// import 'package:provider/provider.dart';
-// import 'package:e_commerce_app/providers/user_provider.dart';
+import 'package:e_commerce_app/features/admin/screens/posts_screen.dart';
 
-class BottomBar extends StatefulWidget {
-  static const String routeName = 'actual-home';
-  const BottomBar({super.key});
+class AdminScreen extends StatefulWidget {
+  const AdminScreen({super.key});
 
   @override
-  State<BottomBar> createState() => _BottomBarState();
+  State<AdminScreen> createState() => _AdminScreenState();
 }
 
-class _BottomBarState extends State<BottomBar> {
+class _AdminScreenState extends State<AdminScreen> {
   int _page = 0;
   double bottomBarWidth = 42;
   double bottomBarBorderWidth = 5;
 
   List<Widget> pages = [
-    const HomeScreen(),
-    const AccountScreen(),
+    const PostsScreen(),
+    const Center(
+      child: Text('Posts Page'),
+    ),
+    const Center(
+      child: Text('Analytics Page'),
+    ),
     const Center(
       child: Text('Cart Page'),
     ),
@@ -36,6 +36,37 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50), // Correct placement
+        child: AppBar(
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: GlobalVariables.appBarGradient,
+            ),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                alignment: Alignment.topLeft,
+                child: Image.asset(
+                  'assets/images/amazon_in.png',
+                  width: 120,
+                  height: 45,
+                  color: Colors.black,
+                ),
+              ),
+              const Text(
+                'Admin',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
       body: pages[_page],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _page,
@@ -45,7 +76,7 @@ class _BottomBarState extends State<BottomBar> {
         iconSize: 28,
         onTap: updatePage,
         items: [
-          // Home
+          // POSTS
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -65,7 +96,7 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: '',
           ),
-          // Account or profile
+          // ANALYTICS
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -80,12 +111,12 @@ class _BottomBarState extends State<BottomBar> {
                 ),
               ),
               child: const Icon(
-                Icons.person_outline_outlined,
+                Icons.analytics_outlined,
               ),
             ),
             label: '',
           ),
-          // Cart
+          // ORDERS
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -99,13 +130,8 @@ class _BottomBarState extends State<BottomBar> {
                   ),
                 ),
               ),
-              child: badges.Badge(
-                elevation: 0,
-                badgeContent: const Text('2'),
-                badgeColor: Colors.white,
-                child: const Icon(
-                  Icons.shopping_cart_outlined,
-                ),
+              child: const Icon(
+                Icons.all_inbox_outlined,
               ),
             ),
             label: '',
