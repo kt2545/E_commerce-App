@@ -1,13 +1,11 @@
-// import 'package:e_commerce_app/features/admin/screens/posts_screen.dart';
-// import 'package:e_commerce_app/features/home/screens/home_screen.dart';
-import 'package:e_commerce_app/router.dart';
-// import 'package:e_commerce_app/screens/auth_screen.dart';
-import 'package:e_commerce_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'constants/global_variables.dart';
 import 'package:provider/provider.dart';
-import 'package:e_commerce_app/providers/user_provider.dart';
-import 'package:e_commerce_app/features/admin/screens/add_product_screen.dart';
+import 'constants/global_variables.dart';
+import 'features/admin/screens/add_product_screen.dart';
+import 'features/admin/screens/admin_screen.dart';
+import 'providers/user_provider.dart';
+import 'services/auth_service.dart';
+import 'router.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -54,9 +52,10 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: const AddProductScreen(),
-      // home: const PostsScreen(),
-      // home: const AuthScreen(),
+      home: const AdminScreen(), // Set AdminScreen as default home screen
+      routes: {
+        AddProductScreen.routeName: (context) => const AddProductScreen(),
+      },
     );
   }
 }
