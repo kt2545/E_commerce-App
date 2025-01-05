@@ -1,5 +1,5 @@
-// import 'package:e_commerce_app/common/widgets/bottom_bar.dart';
-// import 'package:e_commerce_app/features/admin/screens/admin_screen.dart';
+// import 'package:e_commerce_app/features/admin/screens/posts_screen.dart';
+// import 'package:e_commerce_app/features/home/screens/home_screen.dart';
 import 'package:e_commerce_app/router.dart';
 // import 'package:e_commerce_app/screens/auth_screen.dart';
 import 'package:e_commerce_app/services/auth_service.dart';
@@ -54,10 +54,9 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      // home: Provider.of<UserProvider>(context).user.token.isNotEmpty
-      //     ? const BottomBar()
-      //     : const AuthScreen(),
       home: const AddProductScreen(),
+      // home: const PostsScreen(),
+      // home: const AuthScreen(),
     );
   }
 }

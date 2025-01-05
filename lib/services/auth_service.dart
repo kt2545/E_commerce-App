@@ -1,4 +1,3 @@
-// lib/services/auth_service.dart
 import 'dart:convert';
 import 'package:e_commerce_app/constants/error_handling.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
@@ -12,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:e_commerce_app/common/widgets/bottom_bar.dart';
 
 class AuthService {
-  // sign up user
+  // Sign up user
   void signUpUser({
     required BuildContext context,
     required String email,
@@ -34,13 +33,13 @@ class AuthService {
         Uri.parse('$uri/api/signup'),
         body: jsonEncode(user.toJson()),
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8'
+          'Content-type': 'application/json; charset=UTF-8',
         },
       );
 
       void handleSignUpSuccess() {
         showSnackBar(
-            context, 'Account created! Login with the same credentials');
+            context, 'Account created! Login with the same credentials.');
       }
 
       if (!context.mounted) return;
@@ -56,7 +55,7 @@ class AuthService {
     }
   }
 
-  // sign in user
+  // Sign in user
   void signInUser({
     required BuildContext context,
     required String email,
@@ -70,7 +69,7 @@ class AuthService {
           'password': password,
         }),
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8'
+          'Content-type': 'application/json; charset=UTF-8',
         },
       );
 
@@ -99,7 +98,7 @@ class AuthService {
     }
   }
 
-  // get user data
+  // Get user data
   void getUserData({
     required BuildContext context,
   }) async {
@@ -107,7 +106,7 @@ class AuthService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('x-auth-token');
 
-      if (token == null) {
+      if (token == null || token.isEmpty) {
         prefs.setString('x-auth-token', '');
         token = ''; // Ensure token is set to an empty string
       }
@@ -116,7 +115,7 @@ class AuthService {
         Uri.parse('$uri/tokenIsValid'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'x-auth-token': token
+          'x-auth-token': token,
         },
       );
 
@@ -127,7 +126,7 @@ class AuthService {
           Uri.parse('$uri/'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'x-auth-token': token
+            'x-auth-token': token,
           },
         );
 

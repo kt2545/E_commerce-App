@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:e_commerce_app/common/widgets/custom_button.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:e_commerce_app/constants/utils.dart';
+import 'package:e_commerce_app/features/admin/services/admin_services.dart';
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:e_commerce_app/common/widgets/custom_textfield.dart';
@@ -21,17 +21,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
+  final AdminServices adminServices = AdminServices();
 
   String category = 'Mobiles';
   List<File> images = [];
+  final _addProductFormKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    super.dispose();
     productNameController.dispose();
     descriptionController.dispose();
     priceController.dispose();
     quantityController.dispose();
+    super.dispose();
   }
 
   List<String> productCategories = [
@@ -39,8 +41,53 @@ class _AddProductScreenState extends State<AddProductScreen> {
     'Essentials',
     'Appliances',
     'Books',
-    'Fashion',
+    'Fashion'
   ];
+
+  void sellProduct() async {
+    if (_addProductFormKey.currentState!.validate()) {
+      if (images.isEmpty) {
+        showSnackBar(context, 'Please select at least one image.');
+        return;
+      }
+
+      // Show a loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+
+      try {
+        adminServices.sellProduct(
+          context: context,
+          name: productNameController.text,
+          description: descriptionController.text,
+          price: double.parse(priceController.text),
+          quantity: double.parse(quantityController.text),
+          category: category,
+          images: images,
+        );
+
+        // Close the loading indicator
+        if (context.mounted) {
+          Navigator.pop(context); // Close the loading dialog
+          showSnackBar(context, 'Product added successfully!');
+          // Navigate back to the previous screen or to another screen
+          Navigator.of(context)
+              .pushReplacementNamed('/'); // Example: navigate to home page
+        }
+      } catch (e) {
+        // Close the loading indicator
+        if (context.mounted) {
+          Navigator.pop(context); // Close the loading dialog
+          showSnackBar(context, 'Failed to add product: $e');
+        }
+      }
+    }
+  }
 
   void selectImages() async {
     var res = await pickImages();
@@ -66,11 +113,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
               color: Colors.black,
             ),
           ),
-          centerTitle: true,
         ),
       ),
       body: SingleChildScrollView(
         child: Form(
+          key: _addProductFormKey,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
@@ -79,10 +126,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 images.isNotEmpty
                     ? CarouselSlider(
                         items: images.map(
-                          (file) {
+                          (i) {
                             return Builder(
                               builder: (BuildContext context) => Image.file(
-                                file,
+                                i,
                                 fit: BoxFit.cover,
                                 height: 200,
                               ),
@@ -151,11 +198,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
-                  child: DropdownButton<String>(
+                  child: DropdownButton(
                     value: category,
                     icon: const Icon(Icons.keyboard_arrow_down),
                     items: productCategories.map((String item) {
-                      return DropdownMenuItem<String>(
+                      return DropdownMenuItem(
                         value: item,
                         child: Text(item),
                       );
@@ -170,7 +217,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 const SizedBox(height: 10),
                 CustomButton(
                   text: 'Sell',
-                  onTap: () {},
+                  onTap: sellProduct,
                 ),
               ],
             ),

@@ -22,9 +22,6 @@ class _AdminScreenState extends State<AdminScreen> {
     const Center(
       child: Text('Analytics Page'),
     ),
-    const Center(
-      child: Text('Cart Page'),
-    ),
   ];
 
   void updatePage(int page) {
