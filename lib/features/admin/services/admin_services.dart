@@ -66,11 +66,7 @@ class AdminServices {
       }
     } catch (e) {
       if (context.mounted) {
-        if (context.mounted) {
-          if (context.mounted) {
-            showSnackBar(context, e.toString());
-          }
-        }
+        showSnackBar(context, e.toString());
       }
     }
   }
@@ -109,5 +105,36 @@ class AdminServices {
       showSnackBar(context, e.toString());
     }
     return productList;
+  }
+
+  void deleteProduct({
+    required BuildContext context,
+    required Product product,
+    required VoidCallback onSuccess,
+  }) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/admin/delete-product'), // Ensure route consistency
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token,
+        },
+        body: jsonEncode({
+          'id': product.id,
+        }),
+      );
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: onSuccess,
+      );
+    } catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
+    }
   }
 }

@@ -13,7 +13,7 @@ class PostsScreen extends StatefulWidget {
 }
 
 class _PostsScreenState extends State<PostsScreen> {
-  List<Product>? products;
+  List<Product> products = []; // Initialize with empty list
   final AdminServices adminServices = AdminServices();
 
   @override
@@ -22,16 +22,20 @@ class _PostsScreenState extends State<PostsScreen> {
     fetchAllProducts();
   }
 
-  Future<void> fetchAllProducts() async {
-    try {
-      products = await adminServices.fetchAllProducts(context);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch products: $e')),
-      );
-    } finally {
-      setState(() {});
-    }
+  fetchAllProducts() async {
+    products = await adminServices.fetchAllProducts(context);
+    setState(() {});
+  }
+
+  void deleteProduct(Product product, int index) {
+    adminServices.deleteProduct(
+      context: context,
+      product: product,
+      onSuccess: () {
+        products.removeAt(index);
+        setState(() {});
+      },
+    );
   }
 
   void navigateToAddProduct() {
@@ -40,15 +44,15 @@ class _PostsScreenState extends State<PostsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return products == null
+    return products.isEmpty
         ? const Loader()
         : Scaffold(
             body: GridView.builder(
-              itemCount: products!.length,
+              itemCount: products.length, // Access products safely
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2),
               itemBuilder: (context, index) {
-                final productData = products![index];
+                final productData = products[index];
                 return Column(
                   children: [
                     SizedBox(
@@ -68,7 +72,7 @@ class _PostsScreenState extends State<PostsScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () => deleteProduct(productData, index),
                           icon: const Icon(
                             Icons.delete_outline,
                           ),

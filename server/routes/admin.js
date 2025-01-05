@@ -27,14 +27,25 @@ adminRouter.post("/admin/add-product", admin, async (req, res) => {
     }
 });
 
-// Get all your products
-adminRouter.get('/admin/get-products', admin, async (req, res) => {
+// Get all products
+adminRouter.get("/admin/get-products", admin, async (req, res) => {
     try {
         const products = await Product.find({});
-        console.log('Products fetched successfully:', products); // Log fetched products
         res.json(products);
     } catch (e) {
         console.error('Error fetching products:', e); // Log errors
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// Delete the product
+adminRouter.post("/admin/delete-product", admin, async (req, res) => { // Ensure route consistency
+    try {
+        const { id } = req.body;
+        let product = await Product.findByIdAndDelete(id);
+        res.json(product);
+    } catch (e) {
+        console.error('Error deleting product:', e); // Log errors
         res.status(500).json({ error: e.message });
     }
 });
