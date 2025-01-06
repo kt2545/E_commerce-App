@@ -1,13 +1,13 @@
 const express = require('express');
 const adminRouter = express.Router();
 const admin = require("../middlewares/admin");
-const Product = require('../models/product'); // Import Product model
+const Product = require('../models/product');
 
 // Add product
 adminRouter.post("/admin/add-product", admin, async (req, res) => {
     try {
         const { name, description, images, quantity, price, category } = req.body;
-        console.log('Received product data:', req.body); // Log incoming data
+        console.log('Received product data:', req.body);
 
         let product = new Product({
             name,
@@ -19,10 +19,10 @@ adminRouter.post("/admin/add-product", admin, async (req, res) => {
         });
         product = await product.save();
         
-        console.log('Product added successfully:', product); // Log saved product
+        console.log('Product added successfully:', product);
         res.json(product);
     } catch (e) {
-        console.error('Error adding product:', e); // Log errors
+        console.error('Error adding product:', e);
         res.status(500).json({ error: e.message });
     }
 });
@@ -33,19 +33,18 @@ adminRouter.get("/admin/get-products", admin, async (req, res) => {
         const products = await Product.find({});
         res.json(products);
     } catch (e) {
-        console.error('Error fetching products:', e); // Log errors
+        console.error('Error fetching products:', e);
         res.status(500).json({ error: e.message });
     }
 });
 
 // Delete the product
-adminRouter.post("/admin/delete-product", admin, async (req, res) => { // Ensure route consistency
+adminRouter.post("/admin/delete-product", admin, async (req, res) => { 
     try {
         const { id } = req.body;
-        let product = await Product.findByIdAndDelete(id);
+       let product = await Product.findByIdAndDelete(id);
         res.json(product);
-    } catch (e) {
-        console.error('Error deleting product:', e); // Log errors
+    }catch (e) {
         res.status(500).json({ error: e.message });
     }
 });

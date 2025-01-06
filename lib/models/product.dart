@@ -3,7 +3,7 @@ import 'dart:convert';
 class Product {
   final String name;
   final String description;
-  final double quantity;
+  final int quantity;
   final List<String> images;
   final String category;
   final double price;
@@ -33,13 +33,13 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      name: map['name'],
+      name: map['name'] ?? '',
       description: map['description'] ?? '',
-      quantity: map['quantity']?.toDouble() ?? 0.0,
-      images: List<String>.from(map['images']),
+      quantity: map['quantity'] ?? 0,
+      images: List<String>.from(map['images'] ?? []),
       category: map['category'] ?? '',
-      price: map['price']?.toDouble() ?? 0.0,
-      id: map['id'],
+      price: (map['price'] ?? 0).toDouble(),
+      id: map['_id'], // Ensure the correct key is used
     );
   }
 

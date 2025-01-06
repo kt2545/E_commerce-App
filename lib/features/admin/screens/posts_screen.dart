@@ -13,7 +13,7 @@ class PostsScreen extends StatefulWidget {
 }
 
 class _PostsScreenState extends State<PostsScreen> {
-  List<Product> products = []; // Initialize with empty list
+  List<Product> products = []; // Initialize with an empty list
   final AdminServices adminServices = AdminServices();
 
   @override
@@ -24,7 +24,9 @@ class _PostsScreenState extends State<PostsScreen> {
 
   fetchAllProducts() async {
     products = await adminServices.fetchAllProducts(context);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void deleteProduct(Product product, int index) {
@@ -33,7 +35,9 @@ class _PostsScreenState extends State<PostsScreen> {
       product: product,
       onSuccess: () {
         products.removeAt(index);
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       },
     );
   }
@@ -58,7 +62,9 @@ class _PostsScreenState extends State<PostsScreen> {
                     SizedBox(
                       height: 140,
                       child: SingleProduct(
-                        image: productData.images[0],
+                        image: productData.images.isNotEmpty
+                            ? productData.images[0]
+                            : 'placeholder_image_url', // Ensure null safety
                       ),
                     ),
                     Row(

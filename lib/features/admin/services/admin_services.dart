@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:logger/logger.dart';
 
 class AdminServices {
   void sellProduct({
@@ -16,7 +17,7 @@ class AdminServices {
     required String name,
     required String description,
     required double price,
-    required double quantity,
+    required int quantity,
     required String category,
     required List<File> images,
   }) async {
@@ -30,7 +31,7 @@ class AdminServices {
         CloudinaryResponse res = await cloudinary.uploadFile(
           CloudinaryFile.fromFile(
             images[i].path,
-            folder: name.trim(), // Ensure no trailing whitespace
+            folder: name.trim(),
           ),
         );
         imageUrls.add(res.secureUrl);
@@ -48,7 +49,7 @@ class AdminServices {
       http.Response res = await http.post(
         Uri.parse('$uri/admin/add-product'),
         headers: {
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': userProvider.user.token,
         },
         body: product.toJson(),
@@ -71,7 +72,7 @@ class AdminServices {
     }
   }
 
-  // get all the products
+  // Get all the products
   Future<List<Product>> fetchAllProducts(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     List<Product> productList = [];
@@ -79,7 +80,7 @@ class AdminServices {
       http.Response res = await http.get(
         Uri.parse('$uri/admin/get-products'),
         headers: {
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': userProvider.user.token,
         },
       );
@@ -89,14 +90,10 @@ class AdminServices {
           response: res,
           context: context,
           onSuccess: () {
-            for (int i = 0; i < jsonDecode(res.body).length; i++) {
-              productList.add(
-                Product.fromJson(
-                  jsonEncode(
-                    jsonDecode(res.body)[i],
-                  ),
-                ),
-              );
+            for (var item in jsonDecode(res.body)) {
+              var product = Product.fromJson(jsonEncode(item));
+              productList.add(product);
+              Logger().i('Fetched Product ID: ${product.id}');
             }
           },
         );
@@ -114,11 +111,19 @@ class AdminServices {
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
+    if (product.id == null || product.id!.isEmpty) {
+      Logger().e('Error: Product ID is null or empty');
+      showSnackBar(context, 'Product ID is null or empty');
+      return;
+    }
+
+    Logger().i('Attempting to delete product with ID: ${product.id}');
+
     try {
       http.Response res = await http.post(
-        Uri.parse('$uri/admin/delete-product'), // Ensure route consistency
+        Uri.parse('$uri/admin/delete-product'),
         headers: {
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': userProvider.user.token,
         },
         body: jsonEncode({
@@ -126,11 +131,16 @@ class AdminServices {
         }),
       );
 
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: onSuccess,
-      );
+      Logger().i('Delete response status: ${res.statusCode}');
+      Logger().i('Delete response body: ${res.body}');
+
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: onSuccess,
+        );
+      }
     } catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString());
