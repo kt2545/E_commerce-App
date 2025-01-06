@@ -70,7 +70,7 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
                   child: GridView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.only(left: 15),
-                    itemCount: 10,
+                    itemCount: productList!.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 1,
@@ -96,6 +96,19 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
                                   product.images[0],
                                 ),
                               ),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            padding: const EdgeInsets.only(
+                              left: 0,
+                              top: 5,
+                              bottom: 15,
+                            ),
+                            child: Text(
+                              product.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
