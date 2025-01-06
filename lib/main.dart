@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'constants/global_variables.dart';
 import 'features/admin/screens/add_product_screen.dart';
-import 'features/admin/screens/admin_screen.dart';
+// import 'features/admin/screens/admin_screen.dart';
+import 'features/home/screens/home_screen.dart'; // Add this line
 import 'providers/user_provider.dart';
 import 'services/auth_service.dart';
 import 'router.dart';
@@ -52,7 +53,8 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: const AdminScreen(), // Set AdminScreen as default home screen
+      // home: const AdminScreen(),
+      home: const HomeScreen(),
       routes: {
         AddProductScreen.routeName: (context) => const AddProductScreen(),
       },
