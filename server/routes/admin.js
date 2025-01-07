@@ -1,7 +1,7 @@
 const express = require('express');
 const adminRouter = express.Router();
-const admin = require("../middlewares/admin");
-const Product = require('../models/product');
+const admin = require("../middlewares/admin"); // Updated path to admin middleware
+const Product = require('../models/product'); // Ensure this path is correct
 
 // Add product
 adminRouter.post("/admin/add-product", admin, async (req, res) => {
@@ -42,9 +42,10 @@ adminRouter.get("/admin/get-products", admin, async (req, res) => {
 adminRouter.post("/admin/delete-product", admin, async (req, res) => { 
     try {
         const { id } = req.body;
-       let product = await Product.findByIdAndDelete(id);
+        let product = await Product.findByIdAndDelete(id);
         res.json(product);
-    }catch (e) {
+    } catch (e) {
+        console.error('Error deleting product:', e);
         res.status(500).json({ error: e.message });
     }
 });
