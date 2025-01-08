@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/models/product.dart';
 import 'package:flutter/material.dart';
 
 class DealOfDay extends StatefulWidget {
@@ -8,6 +9,15 @@ class DealOfDay extends StatefulWidget {
 }
 
 class _DealOfDayState extends State<DealOfDay> {
+  Product? product;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDealOfDay();
+  }
+
+  fetchDealOfDay() async {}
   @override
   Widget build(BuildContext context) {
     return Column(
