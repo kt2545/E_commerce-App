@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+const ratingSchema = mongoose.Schema({
+    userId: {
+        type: String,
+        required: true,
+    },
+    rating: {
+        type: Number,
+        required: true,
+    },
+});
+
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -29,7 +40,7 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    // ratings
+    ratings: [ratingSchema],  // Use the defined ratingSchema
 });
 
 const Product = mongoose.model("Product", productSchema);
