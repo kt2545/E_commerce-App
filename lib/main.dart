@@ -1,9 +1,11 @@
-import 'package:e_commerce_app/features/admin/screens/admin_screen.dart'; // Ensure this import is correct
+// import 'package:e_commerce_app/features/admin/screens/admin_screen.dart'; // Ensure this import is correct
+// import 'package:e_commerce_app/features/home/screens/home_screen.dart';
 // import 'package:e_commerce_app/features/home/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'constants/global_variables.dart';
 import 'features/admin/screens/add_product_screen.dart';
+import 'features/cart/screens/cart_screen.dart'; // Import the CartScreen
 // import 'features/admin/screens/admin_screen.dart';
 // import 'features/home/screens/home_screen.dart'; // Add this line
 import 'providers/user_provider.dart';
@@ -55,8 +57,7 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: const AdminScreen(),
-      // home: const HomeScreen(),
+      home: const CartScreen(), // Set this to CartScreen
       routes: {
         AddProductScreen.routeName: (context) => const AddProductScreen(),
       },

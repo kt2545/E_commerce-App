@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/features/address/screens/address_screen.dart';
 import 'package:e_commerce_app/features/admin/screens/add_product_screen.dart';
 import 'package:e_commerce_app/features/search/screens/search_screen.dart';
 import 'package:flutter/material.dart';
@@ -49,17 +50,19 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
           searchQuery: searchQuery,
         ),
       );
-    case ProductDetailsScreen.routeName: // Correct class name
-      var product =
-          routeSettings.arguments as Product; // Ensure correct type casting
+    case ProductDetailsScreen.routeName:
+      var product = routeSettings.arguments as Product;
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => ProductDetailsScreen(
-          // Correct instantiation
           product: product,
         ),
       );
-
+    case AddressScreen.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const AddressScreen(),
+      );
     default:
       return MaterialPageRoute(
         settings: routeSettings,
