@@ -1,14 +1,14 @@
-// e_commerce_app/server/models/user.js
 const mongoose = require('mongoose');
+const { productSchema } = require("./product");
 
 const userSchema = new mongoose.Schema({
     name: {
-        required: true, // Corrected spelling
+        required: true,
         type: String,
         trim: true,
     },
     email: {
-        required: true, // Corrected spelling
+        required: true,
         type: String,
         trim: true,
         validate: {
@@ -31,8 +31,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'user',
     },
-    // cart
+    cart: [
+        {
+            product: productSchema,
+            quantity: {
+                type: Number,
+                required: true,
+            },
+        },
+    ],
 });
 
-const User = mongoose.model("User", userSchema); // Added space after comma
+const User = mongoose.model("User", userSchema); 
 module.exports = User;

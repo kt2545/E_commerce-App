@@ -11,13 +11,4 @@ const ratingSchema = mongoose.Schema({
     },
 });
 
-const productSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    ratings: [ratingSchema],
-});
-
-const Product = mongoose.model("Product", productSchema);
 module.exports = Product;

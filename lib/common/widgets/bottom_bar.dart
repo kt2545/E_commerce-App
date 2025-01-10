@@ -1,8 +1,10 @@
 import 'package:e_commerce_app/constants/global_variables.dart';
+import 'package:e_commerce_app/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:e_commerce_app/features/home/screens/home_screen.dart';
 import 'package:e_commerce_app/features/account/screens/account_screen.dart';
+import 'package:provider/provider.dart';
 // import 'package:provider/provider.dart';
 // import 'package:e_commerce_app/providers/user_provider.dart';
 
@@ -35,6 +37,8 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
+    final userCartLen = context.watch<UserProvider>().user.cart.length;
+
     return Scaffold(
       body: pages[_page],
       bottomNavigationBar: BottomNavigationBar(
@@ -86,6 +90,7 @@ class _BottomBarState extends State<BottomBar> {
             label: '',
           ),
           // Cart
+          // Cart
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -100,7 +105,7 @@ class _BottomBarState extends State<BottomBar> {
                 ),
               ),
               child: badges.Badge(
-                badgeContent: const Text('2'),
+                badgeContent: Text(userCartLen.toString()),
                 badgeStyle: badges.BadgeStyle(
                   badgeColor: Colors.white,
                 ),

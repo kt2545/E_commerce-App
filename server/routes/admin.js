@@ -1,7 +1,7 @@
 const express = require('express');
 const adminRouter = express.Router();
 const admin = require("../middlewares/admin"); // Updated path to admin middleware
-const Product = require('../models/product'); // Ensure this path is correct
+const {Product} = require('../models/product'); // Ensure this path is correct
 
 // Add product
 adminRouter.post("/admin/add-product", admin, async (req, res) => {
