@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:e_commerce_app/constants/error_handling.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:e_commerce_app/constants/utils.dart';
@@ -11,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:e_commerce_app/common/widgets/bottom_bar.dart';
 
 class AuthService {
-  // Sign up user
+  // sign up user
   void signUpUser({
     required BuildContext context,
     required String email,
@@ -27,36 +28,33 @@ class AuthService {
         address: '',
         type: '',
         token: '',
-        cart: [], // Add the required 'cart' parameter
+        cart: [],
       );
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),
-        body: jsonEncode(user.toJson()),
+        body: user.toJson(),
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-
-      void handleSignUpSuccess() {
-        showSnackBar(
-            context, 'Account created! Login with the same credentials.');
-      }
-
-      if (!context.mounted) return;
 
       httpErrorHandle(
         response: res,
         context: context,
-        onSuccess: handleSignUpSuccess,
+        onSuccess: () {
+          showSnackBar(
+            context,
+            'Account created! Login with the same credentials!',
+          );
+        },
       );
     } catch (e) {
-      if (!context.mounted) return;
       showSnackBar(context, e.toString());
     }
   }
 
-  // Sign in user
+  // sign in user
   void signInUser({
     required BuildContext context,
     required String email,
@@ -70,53 +68,45 @@ class AuthService {
           'password': password,
         }),
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-
-      void handleSignInSuccess() async {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
-        if (!context.mounted) return;
-        Provider.of<UserProvider>(context, listen: false).setUser(res.body);
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          BottomBar.routeName,
-          (route) => false,
-        );
-      }
-
-      if (!context.mounted) return;
-
       httpErrorHandle(
         response: res,
         context: context,
-        onSuccess: handleSignInSuccess,
+        onSuccess: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          Provider.of<UserProvider>(context, listen: false).setUser(res.body);
+          await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            BottomBar.routeName,
+            (route) => false,
+          );
+        },
       );
     } catch (e) {
-      if (!context.mounted) return;
       showSnackBar(context, e.toString());
     }
   }
 
-  // Get user data
-  void getUserData({
-    required BuildContext context,
-  }) async {
+  // get user data
+  void getUserData(
+    BuildContext context,
+  ) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('x-auth-token');
 
-      if (token == null || token.isEmpty) {
+      if (token == null) {
         prefs.setString('x-auth-token', '');
-        token = ''; // Ensure token is set to an empty string
       }
 
       var tokenRes = await http.post(
         Uri.parse('$uri/tokenIsValid'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'x-auth-token': token,
+          'x-auth-token': token!
         },
       );
 
@@ -127,16 +117,14 @@ class AuthService {
           Uri.parse('$uri/'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'x-auth-token': token,
+            'x-auth-token': token
           },
         );
 
-        if (!context.mounted) return;
         var userProvider = Provider.of<UserProvider>(context, listen: false);
         userProvider.setUser(userRes.body);
       }
     } catch (e) {
-      if (!context.mounted) return;
       showSnackBar(context, e.toString());
     }
   }

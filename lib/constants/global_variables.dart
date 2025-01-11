@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const String uri = 'http://192.168.1.66:3000';
+const String uri = 'http://192.168.1.70:3000';
 
 // const String uri = 'http://localhost:3000';
 

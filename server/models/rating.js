@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 
 const ratingSchema = mongoose.Schema({
-    userId: {
-        type: String,
-        required: true,
-    },
-    rating: {
-        type: Number,
-        required: true,
-    },
+  userId: {
+    type: String,
+    required: true,
+  },
+  rating: {
+    type: Number,
+    required: true,
+  },
 });
 
-module.exports = Product;
+module.exports = ratingSchema;

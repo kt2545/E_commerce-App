@@ -1,6 +1,8 @@
 import 'package:e_commerce_app/constants/global_variables.dart';
-import 'package:flutter/material.dart';
+import 'package:e_commerce_app/features/admin/screens/analtyics_screen.dart';
+import 'package:e_commerce_app/features/admin/screens/orders_screen.dart';
 import 'package:e_commerce_app/features/admin/screens/posts_screen.dart';
+import 'package:flutter/material.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -16,12 +18,8 @@ class _AdminScreenState extends State<AdminScreen> {
 
   List<Widget> pages = [
     const PostsScreen(),
-    const Center(
-      child: Text('Posts Page'),
-    ),
-    const Center(
-      child: Text('Analytics Page'),
-    ),
+    const AnalyticsScreen(),
+    const OrdersScreen(),
   ];
 
   void updatePage(int page) {
@@ -73,6 +71,7 @@ class _AdminScreenState extends State<AdminScreen> {
         iconSize: 28,
         onTap: updatePage,
         items: [
+          // POSTS
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -92,6 +91,7 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
             label: '',
           ),
+          // ANALYTICS
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -111,6 +111,7 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
             label: '',
           ),
+          // ORDERS
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,

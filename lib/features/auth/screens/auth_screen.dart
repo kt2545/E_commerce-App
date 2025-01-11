@@ -1,8 +1,8 @@
-import 'package:e_commerce_app/services/auth_service.dart';
+import 'package:e_commerce_app/features/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
-import 'package:e_commerce_app/common/widgets/custom_textfield.dart'; // Adjust the path based on your file structure
-import 'package:e_commerce_app/common/widgets/custom_button.dart'; // Adjust the path based on you
+import 'package:e_commerce_app/common/widgets/custom_textfield.dart';
+import 'package:e_commerce_app/common/widgets/custom_button.dart';
 
 enum Auth {
   signin,
@@ -18,7 +18,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  Auth _auth = Auth.signin;
+  Auth _auth = Auth.signup;
   final _signUpFormKey = GlobalKey<FormState>();
   final _signInFormKey = GlobalKey<FormState>();
   final AuthService authService = AuthService();
@@ -63,12 +63,15 @@ class _AuthScreenState extends State<AuthScreen> {
             children: [
               const Text(
                 'Welcome',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               ListTile(
                 tileColor: _auth == Auth.signup
-                    ? GlobalVariables.greyBackgroundCOlor
-                    : GlobalVariables.backgroundColor,
+                    ? GlobalVariables.backgroundColor
+                    : GlobalVariables.greyBackgroundCOlor,
                 title: const Text(
                   'Create Account',
                   style: TextStyle(
@@ -116,15 +119,15 @@ class _AuthScreenState extends State<AuthScreen> {
                               signUpUser();
                             }
                           },
-                        ),
+                        )
                       ],
                     ),
                   ),
                 ),
               ListTile(
                 tileColor: _auth == Auth.signin
-                    ? GlobalVariables.greyBackgroundCOlor
-                    : GlobalVariables.backgroundColor,
+                    ? GlobalVariables.backgroundColor
+                    : GlobalVariables.greyBackgroundCOlor,
                 title: const Text(
                   'Sign-In.',
                   style: TextStyle(
@@ -167,7 +170,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               signInUser();
                             }
                           },
-                        ),
+                        )
                       ],
                     ),
                   ),

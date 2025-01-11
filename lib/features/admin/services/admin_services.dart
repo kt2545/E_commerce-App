@@ -1,15 +1,16 @@
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
 import 'package:e_commerce_app/constants/error_handling.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:e_commerce_app/constants/utils.dart';
+import 'package:e_commerce_app/features/admin/models/sales.dart';
+import 'package:e_commerce_app/models/order.dart';
 import 'package:e_commerce_app/models/product.dart';
 import 'package:e_commerce_app/providers/user_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:logger/logger.dart';
 
 class AdminServices {
   void sellProduct({
@@ -17,7 +18,7 @@ class AdminServices {
     required String name,
     required String description,
     required double price,
-    required int quantity,
+    required double quantity,
     required String category,
     required List<File> images,
   }) async {
@@ -29,10 +30,7 @@ class AdminServices {
 
       for (int i = 0; i < images.length; i++) {
         CloudinaryResponse res = await cloudinary.uploadFile(
-          CloudinaryFile.fromFile(
-            images[i].path,
-            folder: name.trim(),
-          ),
+          CloudinaryFile.fromFile(images[i].path, folder: name),
         );
         imageUrls.add(res.secureUrl);
       }
@@ -40,12 +38,11 @@ class AdminServices {
       Product product = Product(
         name: name,
         description: description,
-        quantity: quantity,
+        quantity: quantity.toInt(),
         images: imageUrls,
         category: category,
         price: price,
       );
-
       http.Response res = await http.post(
         Uri.parse('$uri/admin/add-product'),
         headers: {
@@ -55,48 +52,45 @@ class AdminServices {
         body: product.toJson(),
       );
 
-      if (context.mounted) {
-        httpErrorHandle(
-          response: res,
-          context: context,
-          onSuccess: () {
-            showSnackBar(context, 'Product Added Successfully!');
-            Navigator.pop(context);
-          },
-        );
-      }
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          showSnackBar(context, 'Product Added Successfully!');
+          Navigator.pop(context);
+        },
+      );
     } catch (e) {
-      if (context.mounted) {
-        showSnackBar(context, e.toString());
-      }
+      showSnackBar(context, e.toString());
     }
   }
 
+  // get all the products
   Future<List<Product>> fetchAllProducts(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     List<Product> productList = [];
     try {
-      http.Response res = await http.get(
-        Uri.parse('$uri/admin/get-products'),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'x-auth-token': userProvider.user.token,
+      http.Response res =
+          await http.get(Uri.parse('$uri/admin/get-products'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': userProvider.user.token,
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+            productList.add(
+              Product.fromJson(
+                jsonEncode(
+                  jsonDecode(res.body)[i],
+                ),
+              ),
+            );
+          }
         },
       );
-
-      if (context.mounted) {
-        httpErrorHandle(
-          response: res,
-          context: context,
-          onSuccess: () {
-            for (var item in jsonDecode(res.body)) {
-              var product = Product.fromJson(jsonEncode(item));
-              productList.add(product);
-              Logger().i('Fetched Product ID: ${product.id}');
-            }
-          },
-        );
-      }
     } catch (e) {
       showSnackBar(context, e.toString());
     }
@@ -110,14 +104,6 @@ class AdminServices {
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    if (product.id == null || product.id!.isEmpty) {
-      Logger().e('Error: Product ID is null or empty');
-      showSnackBar(context, 'Product ID is null or empty');
-      return;
-    }
-
-    Logger().i('Attempting to delete product with ID: ${product.id}');
-
     try {
       http.Response res = await http.post(
         Uri.parse('$uri/admin/delete-product'),
@@ -130,20 +116,112 @@ class AdminServices {
         }),
       );
 
-      Logger().i('Delete response status: ${res.statusCode}');
-      Logger().i('Delete response body: ${res.body}');
-
-      if (context.mounted) {
-        httpErrorHandle(
-          response: res,
-          context: context,
-          onSuccess: onSuccess,
-        );
-      }
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          onSuccess();
+        },
+      );
     } catch (e) {
-      if (context.mounted) {
-        showSnackBar(context, e.toString());
-      }
+      showSnackBar(context, e.toString());
     }
+  }
+
+  Future<List<Order>> fetchAllOrders(BuildContext context) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Order> orderList = [];
+    try {
+      http.Response res =
+          await http.get(Uri.parse('$uri/admin/get-orders'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': userProvider.user.token,
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          for (int i = 0; i < jsonDecode(res.body).length; i++) {
+            orderList.add(
+              Order.fromJson(
+                jsonEncode(
+                  jsonDecode(res.body)[i],
+                ),
+              ),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return orderList;
+  }
+
+  void changeOrderStatus({
+    required BuildContext context,
+    required int status,
+    required Order order,
+    required VoidCallback onSuccess,
+  }) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/admin/change-order-status'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token,
+        },
+        body: jsonEncode({
+          'id': order.id,
+          'status': status,
+        }),
+      );
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: onSuccess,
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<Map<String, dynamic>> getEarnings(BuildContext context) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Sales> sales = [];
+    int totalEarning = 0;
+    try {
+      http.Response res =
+          await http.get(Uri.parse('$uri/admin/analytics'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': userProvider.user.token,
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          var response = jsonDecode(res.body);
+          totalEarning = response['totalEarnings'];
+          sales = [
+            Sales('Mobiles', response['mobileEarnings']),
+            Sales('Essentials', response['essentialEarnings']),
+            Sales('Books', response['booksEarnings']),
+            Sales('Appliances', response['applianceEarnings']),
+            Sales('Fashion', response['fashionEarnings']),
+          ];
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return {
+      'sales': sales,
+      'totalEarnings': totalEarning,
+    };
   }
 }

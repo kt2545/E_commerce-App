@@ -4,7 +4,7 @@ import 'package:e_commerce_app/features/product_details/screens/product_details_
 import 'package:e_commerce_app/features/search/services/search_services.dart';
 import 'package:e_commerce_app/features/search/widget/searched_product.dart';
 import 'package:e_commerce_app/models/product.dart';
-import 'package:e_commerce_app/widgets/address_box.dart';
+import 'package:e_commerce_app/features/home/widgets/address_box.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {

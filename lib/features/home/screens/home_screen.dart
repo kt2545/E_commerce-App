@@ -1,10 +1,9 @@
 import 'package:e_commerce_app/constants/global_variables.dart';
+import 'package:e_commerce_app/features/home/widgets/address_box.dart';
+import 'package:e_commerce_app/features/home/widgets/carousel_image.dart';
+import 'package:e_commerce_app/features/home/widgets/deal_of_day.dart';
+import 'package:e_commerce_app/features/home/widgets/top_categories.dart';
 import 'package:e_commerce_app/features/search/screens/search_screen.dart';
-// import 'package:e_commerce_app/models/user.dart';
-import 'package:e_commerce_app/widgets/address_box.dart';
-import 'package:e_commerce_app/widgets/carousel_image.dart';
-import 'package:e_commerce_app/widgets/deal_of_day.dart';
-import 'package:e_commerce_app/widgets/top_categories.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {

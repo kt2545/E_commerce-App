@@ -4,7 +4,6 @@ import 'package:e_commerce_app/features/admin/screens/add_product_screen.dart';
 import 'package:e_commerce_app/features/admin/services/admin_services.dart';
 import 'package:e_commerce_app/models/product.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce_app/constants/global_variables.dart'; // Import global variables
 
 class PostsScreen extends StatefulWidget {
   const PostsScreen({super.key});
@@ -14,7 +13,7 @@ class PostsScreen extends StatefulWidget {
 }
 
 class _PostsScreenState extends State<PostsScreen> {
-  List<Product> products = [];
+  List<Product>? products;
   final AdminServices adminServices = AdminServices();
 
   @override
@@ -33,10 +32,8 @@ class _PostsScreenState extends State<PostsScreen> {
       context: context,
       product: product,
       onSuccess: () {
-        products.removeAt(index);
-        if (mounted) {
-          setState(() {});
-        }
+        products!.removeAt(index);
+        setState(() {});
       },
     );
   }
@@ -47,23 +44,21 @@ class _PostsScreenState extends State<PostsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: products.isEmpty
-          ? const Loader()
-          : GridView.builder(
-              itemCount: products.length,
+    return products == null
+        ? const Loader()
+        : Scaffold(
+            body: GridView.builder(
+              itemCount: products!.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2),
               itemBuilder: (context, index) {
-                final productData = products[index];
+                final productData = products![index];
                 return Column(
                   children: [
                     SizedBox(
                       height: 140,
                       child: SingleProduct(
-                        image: productData.images.isNotEmpty
-                            ? productData.images[0]
-                            : 'placeholder_image_url',
+                        image: productData.images[0],
                       ),
                     ),
                     Row(
@@ -88,14 +83,13 @@ class _PostsScreenState extends State<PostsScreen> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: navigateToAddProduct,
-        backgroundColor:
-            GlobalVariables.selectedNavBarColor, // Use nav bar color
-        shape: const CircleBorder(), // Ensure the FAB is a perfect circle
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    );
+            floatingActionButton: FloatingActionButton(
+              onPressed: navigateToAddProduct,
+              tooltip: 'Add a Product',
+              child: const Icon(Icons.add),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+          );
   }
 }

@@ -16,15 +16,21 @@ dependencies:
   shared_preferences: ^2.3.3
   badges: ^3.1.2
   carousel_slider: ^5.0.0 
-  mongo_dart: ^0.10.3 
+  mongo_dart: ^0.10.4 # Updated to the latest compatible version
   dotted_border: ^2.0.0+2 
   file_picker: ^8.1.4
   permission_handler: ^11.3.1
   cloudinary_public: ^0.23.1
   logger: ^2.5.0
-  bson: ^5.0.5
+  bson: ^5.0.5 # Updated to the latest compatible version
   uuid: ^4.0.0
   flutter_rating_bar: ^4.0.1
+  pay: ^3.1.0
+  intl: ^0.19.0 # Updated to the latest compatible version
+  charts_flutter: ^0.11.0  # This version depends on intl ^0.17.0
+
+dependency_overrides:
+  intl: ^0.17.0  # Override to use a compatible version of intl for charts_flutter
 
 dev_dependencies:
   flutter_test:
@@ -34,24 +40,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-  #   - images/a_dot_ham.jpeg
-
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+    - assets/applepay.json
+    - assets/gpay.json

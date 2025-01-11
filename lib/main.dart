@@ -1,26 +1,21 @@
-// import 'package:e_commerce_app/features/admin/screens/admin_screen.dart'; // Ensure this import is correct
+import 'package:e_commerce_app/common/widgets/bottom_bar.dart';
+import 'package:e_commerce_app/constants/global_variables.dart';
+// import 'package:e_commerce_app/features/admin/screens/admin_screen.dart';
+import 'package:e_commerce_app/features/auth/screens/auth_screen.dart';
+import 'package:e_commerce_app/features/auth/services/auth_service.dart';
+import 'package:e_commerce_app/features/cart/screens/cart_screen.dart';
 // import 'package:e_commerce_app/features/home/screens/home_screen.dart';
-// import 'package:e_commerce_app/features/home/screens/home_screen.dart';
+import 'package:e_commerce_app/providers/user_provider.dart';
+import 'package:e_commerce_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'constants/global_variables.dart';
-import 'features/admin/screens/add_product_screen.dart';
-import 'features/cart/screens/cart_screen.dart'; // Import the CartScreen
-// import 'features/admin/screens/admin_screen.dart';
-// import 'features/home/screens/home_screen.dart'; // Add this line
-import 'providers/user_provider.dart';
-import 'services/auth_service.dart';
-import 'router.dart';
 
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(
-        create: (context) => UserProvider(),
-      ),
-    ],
-    child: const MyApp(),
-  ));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+    ),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -36,14 +31,14 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    authService.getUserData(context: context);
+    authService.getUserData(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Ecommerce App',
+      title: 'Amazon Clone',
       theme: ThemeData(
         scaffoldBackgroundColor: GlobalVariables.backgroundColor,
         colorScheme: const ColorScheme.light(
@@ -55,12 +50,14 @@ class _MyAppState extends State<MyApp> {
             color: Colors.black,
           ),
         ),
+        useMaterial3: true, // can remove this line
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: const CartScreen(), // Set this to CartScreen
-      routes: {
-        AddProductScreen.routeName: (context) => const AddProductScreen(),
-      },
+      home: Provider.of<UserProvider>(context).user.token.isNotEmpty
+          ? Provider.of<UserProvider>(context).user.type == 'user'
+              ? const BottomBar()
+              : const CartScreen()
+          : const AuthScreen(),
     );
   }
 }

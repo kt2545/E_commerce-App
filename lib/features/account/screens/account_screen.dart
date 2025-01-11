@@ -5,14 +5,13 @@ import 'package:e_commerce_app/features/account/widgets/orders.dart'; // Ensure 
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
-  // ignore: use_super_parameters
-  const AccountScreen({Key? key}) : super(key: key);
+  const AccountScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50), // Correct placement
+        preferredSize: const Size.fromHeight(50),
         child: AppBar(
           flexibleSpace: Container(
             decoration: const BoxDecoration(
@@ -33,8 +32,8 @@ class AccountScreen extends StatelessWidget {
               ),
               Container(
                 padding: const EdgeInsets.only(left: 15, right: 15),
-                child: const Row(
-                  children: [
+                child: Row(
+                  children: const [
                     Padding(
                       padding: EdgeInsets.only(right: 15),
                       child: Icon(Icons.notifications_outlined),
@@ -44,20 +43,20 @@ class AccountScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
+              )
             ],
           ),
         ),
       ),
-      body: const Column(
-        children: [
+      body: Column(
+        children: const [
           BelowAppBar(),
           SizedBox(height: 10),
           TopButtons(),
           SizedBox(height: 20),
-          Orders(), // Corrected this line
+          Orders(),
         ],
-      ), // Ensure there's a comma after the Column widget
+      ),
     );
   }
 }
