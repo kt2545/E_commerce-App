@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:e_commerce_app/models/product.dart';
 
 class Order {
@@ -11,6 +10,7 @@ class Order {
   final int orderedAt;
   final int status;
   final double totalPrice;
+
   Order({
     required this.id,
     required this.products,
@@ -39,11 +39,10 @@ class Order {
     return Order(
       id: map['_id'] ?? '',
       products: List<Product>.from(
-          map['products']?.map((x) => Product.fromMap(x['product']))),
+          map['products']?.map((x) => Product.fromMap(x['product'])) ??
+              const []),
       quantity: List<int>.from(
-        map['products']?.map(
-          (x) => x['quantity'],
-        ),
+        map['products']?.map((x) => x['quantity'] ?? 0) ?? const [],
       ),
       address: map['address'] ?? '',
       userId: map['userId'] ?? '',

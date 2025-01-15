@@ -8,6 +8,7 @@ import 'package:e_commerce_app/providers/user_provider.dart';
 import 'package:e_commerce_app/features/home/widgets/address_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:logging/logging.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -17,6 +18,8 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  final Logger _logger = Logger('CartScreen');
+
   void navigateToSearchScreen(String query) {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
@@ -33,9 +36,19 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
     int sum = 0;
-    user.cart
-        .map((e) => sum += e['quantity'] * e['product']['price'] as int)
-        .toList();
+
+    // Add logging and null checks
+    for (var e in user.cart) {
+      int? quantity = e['quantity'] as int?;
+      int? price = e['product']['price'] as int?;
+
+      if (quantity != null && price != null) {
+        sum += quantity * price;
+      } else {
+        _logger.warning(
+            'Null value detected in cart item: quantity=$quantity, price=$price');
+      }
+    }
 
     return Scaffold(
       appBar: PreferredSize(
@@ -62,33 +75,22 @@ class _CartScreenState extends State<CartScreen> {
                         prefixIcon: InkWell(
                           onTap: () {},
                           child: const Padding(
-                            padding: EdgeInsets.only(
-                              left: 6,
-                            ),
-                            child: Icon(
-                              Icons.search,
-                              color: Colors.black,
-                              size: 23,
-                            ),
+                            padding: EdgeInsets.only(left: 6),
+                            child: Icon(Icons.search,
+                                color: Colors.black, size: 23),
                           ),
                         ),
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: const EdgeInsets.only(top: 10),
                         border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(7),
-                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(7)),
                           borderSide: BorderSide.none,
                         ),
                         enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(7),
-                          ),
-                          borderSide: BorderSide(
-                            color: Colors.black38,
-                            width: 1,
-                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(7)),
+                          borderSide:
+                              BorderSide(color: Colors.black38, width: 1),
                         ),
                         hintText: 'Search Amazon.in',
                         hintStyle: const TextStyle(

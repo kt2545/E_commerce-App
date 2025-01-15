@@ -4,7 +4,6 @@ import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:e_commerce_app/constants/utils.dart';
 import 'package:e_commerce_app/models/product.dart';
 import 'package:e_commerce_app/models/user.dart';
-// import 'package:e_commerce_app/models/user.dart';
 import 'package:e_commerce_app/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +17,10 @@ class ProductDetailsServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
+      if (product.id == null) {
+        throw Exception('Product ID is null');
+      }
+
       http.Response res = await http.post(
         Uri.parse('$uri/api/add-to-cart'),
         headers: {
@@ -51,8 +54,12 @@ class ProductDetailsServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
+      if (product.id == null) {
+        throw Exception('Product ID is null');
+      }
+
       http.Response res = await http.post(
-        Uri.parse('$uri/api/rate-product'), // Ensure base URL is included
+        Uri.parse('$uri/api/rate-product'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': userProvider.user.token,

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:e_commerce_app/models/rating.dart';
 
 class Product {
@@ -11,6 +10,7 @@ class Product {
   final double price;
   final String? id;
   final List<Rating>? rating;
+
   Product({
     required this.name,
     required this.description,
@@ -31,7 +31,7 @@ class Product {
       'category': category,
       'price': price,
       'id': id,
-      'rating': rating,
+      'rating': rating?.map((x) => x.toMap()).toList(),
     };
   }
 

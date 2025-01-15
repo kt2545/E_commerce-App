@@ -1,4 +1,6 @@
 import 'package:e_commerce_app/constants/global_variables.dart';
+import 'package:e_commerce_app/features/account/services/account_services.dart';
+import 'package:e_commerce_app/features/account/widgets/account_button.dart';
 import 'package:e_commerce_app/features/admin/screens/analtyics_screen.dart';
 import 'package:e_commerce_app/features/admin/screens/orders_screen.dart';
 import 'package:e_commerce_app/features/admin/screens/posts_screen.dart';
@@ -56,6 +58,14 @@ class _AdminScreenState extends State<AdminScreen> {
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                width: 120,
+                height: 30,
+                child: AccountButton(
+                  text: 'Log Out',
+                  onTap: () => AccountServices().logOut(context),
                 ),
               )
             ],

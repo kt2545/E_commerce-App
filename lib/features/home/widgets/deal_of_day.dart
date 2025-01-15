@@ -2,7 +2,7 @@ import 'package:e_commerce_app/common/widgets/loader.dart';
 import 'package:e_commerce_app/features/home/services/home_services.dart';
 import 'package:e_commerce_app/models/product.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce_app/features/product_details/screens/product_details_screen.dart'; // Ensure the correct path is used
+import 'package:e_commerce_app/features/product_details/screens/product_details_screen.dart';
 
 class DealOfDay extends StatefulWidget {
   const DealOfDay({super.key});
@@ -22,16 +22,24 @@ class _DealOfDayState extends State<DealOfDay> {
   }
 
   void fetchDealOfDay() async {
-    product = await homeServices.fetchDealOfDay(context: context);
-    setState(() {});
+    try {
+      product = await homeServices.fetchDealOfDay(context: context);
+      setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch deal of the day: $e')),
+      );
+    }
   }
 
   void navigateToDetailScreen() {
-    Navigator.pushNamed(
-      context,
-      ProductDetailsScreen.routeName,
-      arguments: product,
-    );
+    if (product != null) {
+      Navigator.pushNamed(
+        context,
+        ProductDetailScreen.routeName,
+        arguments: product,
+      );
+    }
   }
 
   @override
@@ -52,56 +60,72 @@ class _DealOfDayState extends State<DealOfDay> {
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
-                    Image.network(
-                      product!.images[0],
-                      fit: BoxFit.fitHeight,
-                    ),
+                    if (product?.images.isNotEmpty ?? false)
+                      Image.network(
+                        product!.images[0],
+                        fit: BoxFit.fitHeight,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Icon(Icons.error),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
                     Container(
                       padding: const EdgeInsets.only(left: 15),
                       alignment: Alignment.topLeft,
-                      child: const Text(
-                        '\$ 1000',
-                        style: TextStyle(fontSize: 18),
+                      child: Text(
+                        '\$${product?.price.toStringAsFixed(2) ?? 'N/A'}',
+                        style: const TextStyle(fontSize: 18),
                       ),
                     ),
                     Container(
                       alignment: Alignment.topLeft,
                       padding:
                           const EdgeInsets.only(left: 15, top: 5, right: 40),
-                      child: const Text(
-                        'Kapil',
+                      child: Text(
+                        product?.description ?? 'No description available',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: product!.images
-                            .map(
-                              (e) => Image.network(
-                                e,
-                                fit: BoxFit.fitWidth,
-                                width: 100,
-                                height: 100,
-                              ),
-                            )
-                            .toList(),
+                    if (product?.images.isNotEmpty ?? false)
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: product!.images
+                              .map(
+                                (e) => Image.network(
+                                  e,
+                                  fit: BoxFit.fitWidth,
+                                  width: 100,
+                                  height: 100,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Icon(Icons.error),
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                                ),
+                              )
+                              .toList(),
+                        ),
                       ),
-                    ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 15,
-                      ).copyWith(left: 15),
+                      padding: const EdgeInsets.symmetric(vertical: 15)
+                          .copyWith(left: 15),
                       alignment: Alignment.topLeft,
                       child: Text(
                         'See all deals',
-                        style: TextStyle(
-                          color: Colors.cyan[800],
-                        ),
+                        style: TextStyle(color: Colors.cyan[800]),
                       ),
-                    )
+                    ),
                   ],
                 ),
               );

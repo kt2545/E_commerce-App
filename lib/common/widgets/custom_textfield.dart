@@ -16,18 +16,15 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        hintText: hintText,
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(
+          hintText: hintText,
+          border: const OutlineInputBorder(
+              borderSide: BorderSide(
             color: Colors.black38,
-          ),
-        ),
-        errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
+          )),
+          enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
             color: Colors.black38,
-          ),
-        ),
-      ),
+          ))),
       validator: (val) {
         if (val == null || val.isEmpty) {
           return 'Enter your $hintText';

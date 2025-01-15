@@ -25,11 +25,16 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
   }
 
   fetchCategoryProducts() async {
-    productList = await HomeServices().fetchCategoryProducts(
-      context: context,
-      category: widget.category,
-    );
-    setState(() {});
+    try {
+      productList = await homeServices.fetchCategoryProducts(
+        context: context,
+        category: widget.category,
+      );
+      debugPrint("Fetched products: $productList");
+      setState(() {});
+    } catch (e) {
+      debugPrint("Error fetching category products: $e");
+    }
   }
 
   @override
@@ -80,48 +85,50 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
                     ),
                     itemBuilder: (context, index) {
                       final product = productList![index];
+                      debugPrint("Product at index $index: $product");
                       return GestureDetector(
-                          onTap: () => {
-                                Navigator.pushNamed(
-                                  context,
-                                  ProductDetailsScreen.routeName,
-                                  arguments: product,
-                                )
-                              },
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 130,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.black12,
-                                      width: 0.5,
-                                    ),
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            ProductDetailScreen.routeName,
+                            arguments: product,
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 130,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black12,
+                                    width: 0.5,
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Image.network(
-                                      product.images[0],
-                                    ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Image.network(
+                                    product.images[0],
                                   ),
                                 ),
                               ),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                padding: const EdgeInsets.only(
-                                  left: 0,
-                                  top: 5,
-                                  bottom: 15,
-                                ),
-                                child: Text(
-                                  product.name,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                            ),
+                            Container(
+                              alignment: Alignment.topLeft,
+                              padding: const EdgeInsets.only(
+                                left: 0,
+                                top: 5,
+                                bottom: 15,
                               ),
-                            ],
-                          ));
+                              child: Text(
+                                product.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     },
                   ),
                 ),

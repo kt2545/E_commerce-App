@@ -41,6 +41,10 @@ class _CartProductState extends State<CartProduct> {
     final product = Product.fromMap(productCart['product']);
     final quantity = productCart['quantity'];
 
+    if (product.id == null || product.images.isEmpty) {
+      return Container(); // Return an empty container if product data is invalid
+    }
+
     return Column(
       children: [
         Container(

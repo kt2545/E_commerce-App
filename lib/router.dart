@@ -51,11 +51,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
           searchQuery: searchQuery,
         ),
       );
-    case ProductDetailsScreen.routeName:
+    case ProductDetailScreen.routeName:
       var product = routeSettings.arguments as Product;
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => ProductDetailsScreen(
+        builder: (_) => ProductDetailScreen(
           product: product,
         ),
       );

@@ -6,11 +6,9 @@ import 'package:badges/badges.dart' as badges;
 import 'package:e_commerce_app/features/home/screens/home_screen.dart';
 import 'package:e_commerce_app/features/account/screens/account_screen.dart';
 import 'package:provider/provider.dart';
-// import 'package:provider/provider.dart';
-// import 'package:e_commerce_app/providers/user_provider.dart';
 
 class BottomBar extends StatefulWidget {
-  static const String routeName = 'actual-home';
+  static const String routeName = '/actual-home';
   const BottomBar({super.key});
 
   @override
@@ -48,7 +46,7 @@ class _BottomBarState extends State<BottomBar> {
         iconSize: 28,
         onTap: updatePage,
         items: [
-          // Home
+          // HOME
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -68,7 +66,7 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: '',
           ),
-          // Account or profile
+          // ACCOUNT
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -88,8 +86,7 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: '',
           ),
-          // Cart
-          // Cart
+          // CART
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -104,9 +101,12 @@ class _BottomBarState extends State<BottomBar> {
                 ),
               ),
               child: badges.Badge(
-                badgeContent: Text(userCartLen.toString()),
+                badgeContent: Text(
+                  userCartLen.toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
                 badgeStyle: badges.BadgeStyle(
-                  badgeColor: Colors.white,
+                  badgeColor: Colors.red,
                 ),
                 child: const Icon(
                   Icons.shopping_cart_outlined,

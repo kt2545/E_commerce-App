@@ -1,10 +1,10 @@
 import 'package:e_commerce_app/common/widgets/loader.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
-import 'package:e_commerce_app/features/product_details/screens/product_details_screen.dart';
+import 'package:e_commerce_app/features/home/widgets/address_box.dart';
+import 'package:e_commerce_app/features/product_details/screens/product_details_screen.dart'; // Correct import statement
 import 'package:e_commerce_app/features/search/services/search_services.dart';
 import 'package:e_commerce_app/features/search/widget/searched_product.dart';
 import 'package:e_commerce_app/models/product.dart';
-import 'package:e_commerce_app/features/home/widgets/address_box.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -122,22 +122,24 @@ class _SearchScreenState extends State<SearchScreen> {
                 const SizedBox(height: 10),
                 Expanded(
                   child: ListView.builder(
-                      itemCount: products!.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              ProductDetailsScreen.routeName,
-                              arguments: products![index],
-                            );
-                          },
-                          child: SearchedProduct(
-                            product: products![index],
-                          ),
-                        );
-                      }),
-                )
+                    itemCount: products?.length ?? 0, // Add null check here
+                    itemBuilder: (context, index) {
+                      final product = products![index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            ProductDetailScreen.routeName, // Correct route name
+                            arguments: product,
+                          );
+                        },
+                        child: SearchedProduct(
+                          product: product,
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
     );
