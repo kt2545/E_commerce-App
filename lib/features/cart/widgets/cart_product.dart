@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CartProduct extends StatefulWidget {
+  static const String routeName = '/cart-screen';
   final int index;
   const CartProduct({
     super.key,

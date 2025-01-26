@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce_app/common/widgets/custom_button.dart';
 import 'package:e_commerce_app/common/widgets/stars.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
+import 'package:e_commerce_app/features/cart/widgets/cart_product.dart';
 import 'package:e_commerce_app/features/product_details/services/product_details_services.dart';
 import 'package:e_commerce_app/features/search/screens/search_screen.dart';
 import 'package:e_commerce_app/models/product.dart';
@@ -67,6 +68,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       productDetailsServices.addToCart(
         context: context,
         product: widget.product,
+      );
+      Navigator.pushNamed(
+        context,
+        CartProduct.routeName,
+        arguments: 0, // Pass the desired index to display in CartProduct
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
