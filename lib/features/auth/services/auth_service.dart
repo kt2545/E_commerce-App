@@ -76,24 +76,13 @@ class AuthService {
         context: context,
         onSuccess: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          var responseBody = jsonDecode(res.body);
           Provider.of<UserProvider>(context, listen: false).setUser(res.body);
-          await prefs.setString('x-auth-token', responseBody['token']);
-
-          // Check user role and navigate accordingly
-          if (responseBody['type'] == 'admin') {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/admin_home',
-              (route) => false,
-            );
-          } else {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              BottomBar.routeName,
-              (route) => false,
-            );
-          }
+          await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            BottomBar.routeName,
+            (route) => false,
+          );
         },
       );
     } catch (e) {
