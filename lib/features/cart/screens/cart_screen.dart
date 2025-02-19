@@ -92,7 +92,7 @@ class _CartScreenState extends State<CartScreen> {
                           borderSide:
                               BorderSide(color: Colors.black38, width: 1),
                         ),
-                        hintText: 'Search AstroStore.np',
+                        hintText: 'Search NeoMart.np',
                         hintStyle: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 17,
