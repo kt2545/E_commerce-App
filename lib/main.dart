@@ -9,11 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-      create: (context) => UserProvider(),
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+      ],
+      child: const MyApp(),
     ),
-  ], child: const MyApp()));
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -25,11 +28,19 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AuthService authService = AuthService();
+  bool _isLoading = true; // Track whether user data is being loaded
 
   @override
   void initState() {
     super.initState();
+    _loadUserData();
+  }
+
+  void _loadUserData() async {
     authService.getUserData(context);
+    setState(() {
+      _isLoading = false; // Mark data as loaded
+    });
   }
 
   @override
@@ -44,18 +55,26 @@ class _MyAppState extends State<MyApp> {
         ),
         appBarTheme: const AppBarTheme(
           elevation: 0,
-          iconTheme: IconThemeData(
-            color: Colors.black,
-          ),
+          iconTheme: IconThemeData(color: Colors.black),
         ),
-        useMaterial3: true, // can remove this line
+        useMaterial3: true,
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: Provider.of<UserProvider>(context).user.token.isNotEmpty
-          ? Provider.of<UserProvider>(context).user.type == 'user'
-              ? const BottomBar()
-              : const AdminScreen()
-          : const AuthScreen(),
+      home: _isLoading
+          ? const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            )
+          : Consumer<UserProvider>(
+              builder: (context, userProvider, child) {
+                if (userProvider.user.token.isEmpty) {
+                  return const AuthScreen(); // Show login if no token
+                } else if (userProvider.user.type == 'admin') {
+                  return const AdminScreen(); // Redirect admin to admin screen
+                } else {
+                  return const BottomBar(); // Redirect user to user page
+                }
+              },
+            ),
     );
   }
 }
