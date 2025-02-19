@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:e_commerce_app/common/widgets/custom_textfield.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
 import 'package:e_commerce_app/providers/user_provider.dart';
+import 'package:e_commerce_app/function/esewa.dart';
 
 class AddressScreen extends StatefulWidget {
   static const String routeName = '/address';
@@ -204,6 +205,31 @@ class _AddressScreenState extends State<AddressScreen> {
                   } else {
                     return const Text('Apple Pay not available');
                   }
+                },
+              ),
+              ElevatedButton(
+                child: const Text('Pay with E-Sewa'),
+                onPressed: () {
+                  payPressed(address); // Ensure address is set
+
+                  final user = context.read<UserProvider>().user;
+
+                  // Extract product details from the cart
+                  List<Map<String, dynamic>> cartItems = user.cart.map((e) {
+                    return {
+                      "productId": e["product"]["id"].toString(),
+                      "productName": e["product"]["name"].toString(),
+                      "productPrice":
+                          (e["product"]["price"] * e["quantity"]).toString(),
+                    };
+                  }).toList();
+
+                  // Create a total amount for payment
+                  int totalAmount = cartItems.fold(
+                      0, (sum, item) => sum + int.parse(item["productPrice"]));
+
+                  Esewa esewa = Esewa();
+                  esewa.pay(cartItems, totalAmount.toString());
                 },
               ),
               const SizedBox(height: 10),

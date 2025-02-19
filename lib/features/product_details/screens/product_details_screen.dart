@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce_app/common/widgets/custom_button.dart';
 import 'package:e_commerce_app/common/widgets/stars.dart';
 import 'package:e_commerce_app/constants/global_variables.dart';
-import 'package:e_commerce_app/features/cart/widgets/cart_product.dart';
 import 'package:e_commerce_app/features/product_details/services/product_details_services.dart';
 import 'package:e_commerce_app/features/search/screens/search_screen.dart';
 import 'package:e_commerce_app/models/product.dart';
@@ -32,27 +31,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-
     double totalRating = 0;
 
-    // Check if the rating list is not null before iterating
     if (widget.product.rating != null) {
-      for (int i = 0; i < widget.product.rating!.length; i++) {
-        final currentRating = widget.product.rating![i];
-
-        // Check if the current rating is not null
+      for (var currentRating in widget.product.rating!) {
         if (currentRating != null) {
-          totalRating +=
-              currentRating.rating ?? 0; // Safely access rating value
-
-          // Compare userId only if it's not null
+          totalRating += currentRating.rating ?? 0;
           if (currentRating.userId ==
               Provider.of<UserProvider>(context, listen: false).user.id) {
             myRating = currentRating.rating ?? 0;
           }
         }
       }
-
       if (totalRating != 0) {
         avgRating = totalRating / widget.product.rating!.length;
       }
@@ -69,14 +59,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         context: context,
         product: widget.product,
       );
-      Navigator.pushNamed(
-        context,
-        CartProduct.routeName,
-        arguments: 0, // Pass the desired index to display in CartProduct
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successfully added to cart')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Product ID is null')),
+        const SnackBar(content: Text('Product ID is null')),
       );
     }
   }
@@ -128,7 +116,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           borderSide:
                               BorderSide(color: Colors.black38, width: 1),
                         ),
-                        hintText: 'Search Amazon.in',
+                        hintText: 'Search AstroStore.np',
                         hintStyle: const TextStyle(
                             fontWeight: FontWeight.w500, fontSize: 17),
                       ),
@@ -174,12 +162,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       i,
                       fit: BoxFit.contain,
                       height: 200,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Icon(Icons.error),
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Center(child: CircularProgressIndicator());
-                      },
                     ),
                   );
                 },
@@ -226,32 +208,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 color: const Color.fromRGBO(254, 216, 19, 1),
               ),
             ),
-            const SizedBox(height: 10),
-            Container(color: Colors.black12, height: 5),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(
-                'Rate The Product',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-            ),
-            RatingBar.builder(
-              initialRating: myRating,
-              minRating: 1,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemPadding: const EdgeInsets.symmetric(horizontal: 4),
-              itemBuilder: (context, _) =>
-                  const Icon(Icons.star, color: GlobalVariables.secondaryColor),
-              onRatingUpdate: (rating) {
-                productDetailsServices.rateProduct(
-                  context: context,
-                  product: widget.product,
-                  rating: rating,
-                );
-              },
-            )
           ],
         ),
       ),
